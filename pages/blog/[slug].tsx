@@ -6,6 +6,9 @@ import { useRouter } from 'next/router'
 import { Post } from '../../types'
 import Container from '../../components/container'
 import HomeNav from '../../components/homeNav'
+import fs from 'fs'
+import path from 'path'
+import matter from 'gray-matter'
 
 const BlogPost: FC<Post> = ({ source, frontMatter }) => {
   const content = hydrate(source)
@@ -49,4 +52,21 @@ BlogPost.defaultProps = {
  * then the the correct post for the matching path
  * Posts can come from the fs or our CMS
  */
+
+export function getstaticPaths(){
+  const postsPath = path.join(process.cwd(),'posts')
+const filenames = fs.readdirSync(postsPath)
+const slugs = filenames.map(name=>{
+  const filePath = path.join(postsPath,name)
+  const file= fs.readFileSync(filePath)
+  const { data } = matter(file)
+  return data 
+
+})
+return {
+  paths: slugs.map(s=> ({params: {slug:s.slug }})),
+  fallback:false
+}
+}
+export function getStaticProps(){}
 export default BlogPost

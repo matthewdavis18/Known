@@ -1,10 +1,20 @@
-import React from 'react'
+import React, { useEffect } from 'react'
+import { signIn, useSession } from 'next-auth/client'
+import SocialButton from '../components/socialButton'
 import { Pane, majorScale, Text } from 'evergreen-ui'
 import Logo from '../components/logo'
-
-import SocialButton from '../components/socialButton'
+import { useRouter } from 'next/router'
 
 const Signin = () => {
+  const [session, loading] = useSession()
+  const router = useRouter()
+  //if you have a session (logged in) redirect user to the app
+  useEffect(() => {
+    if (session) {
+      router.push('/app')
+    }
+  })
+  /////////////////////
   return (
     <Pane height="100vh" width="100vw" display="flex">
       <Pane
@@ -37,7 +47,7 @@ const Signin = () => {
         paddingX={majorScale(7)}
       >
         <Pane width="100%" textAlign="center">
-          <SocialButton type="github" onClick={() => {}} />
+          <SocialButton type="spotify" onClick={() => {signIn('spotify')}} />
         </Pane>
       </Pane>
     </Pane>
